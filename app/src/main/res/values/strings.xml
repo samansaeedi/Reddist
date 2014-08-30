@@ -5,6 +5,8 @@
 
     <string name="list_number_title">Number of items in the list</string>
     <string name="pref_last_notification">last_notification</string>
+    <string name="title_activity_detail">Detail</string>
+    <string name="title_activity_settings">Settings</string>
 
     <string-array name="sublist_keys">
         <item>Hot</item>

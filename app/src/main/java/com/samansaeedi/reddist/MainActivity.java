@@ -16,7 +16,6 @@ public class MainActivity extends ActionBarActivity {
                     .replace(R.id.reddit_list_container, new ListFragment(),
                             String.valueOf(R.id.list_fragment))
                     .commit();
-
         }
     }
 }
