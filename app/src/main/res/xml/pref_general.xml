@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="Subreddit"
+        android:key="subreddit"
+        android:defaultValue="-"
+        android:inputType="text"
+        android:singleLine="true" />
+    <ListPreference
+        android:title="Sublist"
+        android:key="sublist"
+        android:defaultValue="hot"
+        android:entries="@array/sublist_keys"
+        android:entryValues="@array/sublist_values" />
+    <com.samansaeedi.reddist.NumberPickerPreference
+        android:title="@string/list_number_title"
+        android:defaultValue="15" />
+
+</PreferenceScreen>

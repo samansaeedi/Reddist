@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Reddist</string>
+    <string name="sync_account_type">reddist.samansaeedi.com</string>
+    <string name="content_authority">com.samansaeedi.reddist</string>
+
+    <string name="list_number_title">Number of items in the list</string>
+
+    <string-array name="sublist_keys">
+        <item>Hot</item>
+        <item>New</item>
+        <item>Top</item>
+        <item>Random</item>
+        <item>Controversial</item>
+    </string-array>
+
+    <string-array name="sublist_values">
+        <item>hot</item>
+        <item>new</item>
+        <item>top</item>
+        <item>random</item>
+        <item>controversial</item>
+    </string-array>
 </resources>
