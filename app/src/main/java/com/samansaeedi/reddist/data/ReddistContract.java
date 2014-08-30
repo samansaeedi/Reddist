@@ -23,22 +23,22 @@ public class ReddistContract {
 
         public static final String TABLE_NAME = "reddist";
         public static final String COLUMN_REDDIT_ID = "id";
-        public static final String COLUMN_SUBREDDIT = "subreddit";
+        public static final String COLUMN_REDDIT_SUBREDDIT = "subreddit";
         public static final String COLUMN_REDDIT_SUBLIST = "sublist";
-        public static final String COLUMN_AUTHOR = "author";
-        public static final String COLUMN_SCORE = "score";
-        public static final String COLUMN_UPS = "ups";
-        public static final String COLUMN_DOWNS = "downs";
-        public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_CREATED_UTC = "created_utc";
+        public static final String COLUMN_REDDIT_AUTHOR = "author";
+        public static final String COLUMN_REDDIT_SCORE = "score";
+        public static final String COLUMN_REDDIT_UPS = "ups";
+        public static final String COLUMN_REDDIT_DOWNS = "downs";
+        public static final String COLUMN_REDDIT_TITLE = "title";
+        public static final String COLUMN_REDDIT_CREATED_UTC = "created_utc";
         public static final String COLUMN_FETCHED = "fetched";
-        public static final String COLUMN_LINK = "permalink";
-        public static final String COLUMN_URL = "url";
-        public static final String COLUMN_NUM_COMMENTS = "num_comments";
-        public static final String COLUMN_DOMAIN = "domain";
-        public static final String COLUMN_CONTENT_TEXT = "selftext";
-        public static final String COLUMN_CONTENT_HTML = "selftext_html";
-        public static final String COLUMN_THUMBNAIL = "thumbnail";
+        public static final String COLUMN_REDDIT_LINK = "permalink";
+        public static final String COLUMN_REDDIT_URL = "url";
+        public static final String COLUMN_REDDIT_NUM_COMMENTS = "num_comments";
+        public static final String COLUMN_REDDIT_DOMAIN = "domain";
+        public static final String COLUMN_REDDIT_CONTENT_TEXT = "selftext";
+        public static final String COLUMN_REDDIT_CONTENT_HTML = "selftext_html";
+        public static final String COLUMN_REDDIT_THUMBNAIL = "thumbnail";
 
         public static Uri buildReddistUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);

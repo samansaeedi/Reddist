@@ -40,17 +40,17 @@ public class ReddistProvider extends ContentProvider {
     public static final UriMatcher uriMatcher = buildUriMatcher();
 
     private static final String selectionSublist =
-            ReddistEntry.COLUMN_SUBREDDIT + " = \'-\' and " +
+            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = \'-\' and " +
             ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ?";
     private static final String selectionSubredditAndSublist =
-            ReddistEntry.COLUMN_SUBREDDIT + " = ? and " +
+            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = ? and " +
             ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ?";
     private static final String selectionSublistAndID =
-            ReddistEntry.COLUMN_SUBREDDIT + " = \'-\' and " +
+            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = \'-\' and " +
                     ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ? and " +
                     ReddistEntry.COLUMN_REDDIT_ID + " = ?";
     private static final String selectionSubredditAndSublistAndID =
-            ReddistEntry.COLUMN_SUBREDDIT + " = ? and " +
+            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = ? and " +
                     ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ? and " +
                     ReddistEntry.COLUMN_REDDIT_ID + " = ?";
     private static final String selectionfetchDate = ReddistEntry.COLUMN_FETCHED + " <= ?";

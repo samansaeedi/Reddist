@@ -15,6 +15,7 @@
         android:entryValues="@array/sublist_values" />
     <com.samansaeedi.reddist.NumberPickerPreference
         android:title="@string/list_number_title"
+        android:key="numberOfItems"
         android:defaultValue="15" />
 
 </PreferenceScreen>

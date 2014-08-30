@@ -20,26 +20,26 @@ public class ReddistDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_WEATHER_TABLE = "create table " + ReddistEntry.TABLE_NAME + " (" +
                 ReddistEntry._ID + " integer primary key autoincrement," +
-                ReddistEntry.COLUMN_AUTHOR + " text not null," +
+                ReddistEntry.COLUMN_REDDIT_AUTHOR + " text not null," +
                 ReddistEntry.COLUMN_REDDIT_ID + " text not null," +
-                ReddistEntry.COLUMN_SUBREDDIT + " text not null," +
+                ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " text not null," +
                 ReddistEntry.COLUMN_REDDIT_SUBLIST + " text not null," +
-                ReddistEntry.COLUMN_SCORE + " integer not null," +
-                ReddistEntry.COLUMN_UPS + " integer not null," +
-                ReddistEntry.COLUMN_DOWNS + " integer not null," +
-                ReddistEntry.COLUMN_TITLE + " text not null," +
-                ReddistEntry.COLUMN_CREATED_UTC + " integer not null," +
+                ReddistEntry.COLUMN_REDDIT_SCORE + " integer not null," +
+                ReddistEntry.COLUMN_REDDIT_UPS + " integer not null," +
+                ReddistEntry.COLUMN_REDDIT_DOWNS + " integer not null," +
+                ReddistEntry.COLUMN_REDDIT_TITLE + " text not null," +
+                ReddistEntry.COLUMN_REDDIT_CREATED_UTC + " integer not null," +
                 ReddistEntry.COLUMN_FETCHED + " integer not null," +
-                ReddistEntry.COLUMN_LINK + " text not null," +
-                ReddistEntry.COLUMN_URL + " text not null," +
-                ReddistEntry.COLUMN_NUM_COMMENTS + " integer not null," +
-                ReddistEntry.COLUMN_DOMAIN + " text," +
-                ReddistEntry.COLUMN_CONTENT_TEXT + " text," +
-                ReddistEntry.COLUMN_CONTENT_HTML + " text," +
-                ReddistEntry.COLUMN_THUMBNAIL + " text," +
+                ReddistEntry.COLUMN_REDDIT_LINK + " text not null," +
+                ReddistEntry.COLUMN_REDDIT_URL + " text not null," +
+                ReddistEntry.COLUMN_REDDIT_NUM_COMMENTS + " integer not null," +
+                ReddistEntry.COLUMN_REDDIT_DOMAIN + " text," +
+                ReddistEntry.COLUMN_REDDIT_CONTENT_TEXT + " text," +
+                ReddistEntry.COLUMN_REDDIT_CONTENT_HTML + " text," +
+                ReddistEntry.COLUMN_REDDIT_THUMBNAIL + " text," +
 
                 " unique (" + ReddistEntry.COLUMN_REDDIT_ID + "," +
-                ReddistEntry.COLUMN_SUBREDDIT+ "," + ReddistEntry.COLUMN_REDDIT_SUBLIST +
+                ReddistEntry.COLUMN_REDDIT_SUBREDDIT+ "," + ReddistEntry.COLUMN_REDDIT_SUBLIST +
                 ") on conflict replace);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
