@@ -1,5 +1,6 @@
 package com.samansaeedi.reddist.data;
 
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -38,5 +39,11 @@ public class ReddistContract {
         public static final String COLUMN_CONTENT_TEXT = "selftext";
         public static final String COLUMN_CONTENT_HTML = "selftext_html";
         public static final String COLUMN_THUMBNAIL = "thumbnail";
+
+        public static Uri buildReddistUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
+
+
 }
