@@ -22,8 +22,8 @@ public class ReddistDbHelper extends SQLiteOpenHelper {
                 ReddistEntry._ID + " integer primary key autoincrement," +
                 ReddistEntry.COLUMN_REDDIT_AUTHOR + " text not null," +
                 ReddistEntry.COLUMN_REDDIT_ID + " text not null," +
-                ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " text not null," +
-                ReddistEntry.COLUMN_REDDIT_SUBLIST + " text not null," +
+                ReddistEntry.COLUMN_SUBREDDIT + " text not null," +
+                ReddistEntry.COLUMN_SUBLIST + " text not null," +
                 ReddistEntry.COLUMN_REDDIT_SCORE + " integer not null," +
                 ReddistEntry.COLUMN_REDDIT_UPS + " integer not null," +
                 ReddistEntry.COLUMN_REDDIT_DOWNS + " integer not null," +
@@ -39,7 +39,7 @@ public class ReddistDbHelper extends SQLiteOpenHelper {
                 ReddistEntry.COLUMN_REDDIT_THUMBNAIL + " text," +
 
                 " unique (" + ReddistEntry.COLUMN_REDDIT_ID + "," +
-                ReddistEntry.COLUMN_REDDIT_SUBREDDIT+ "," + ReddistEntry.COLUMN_REDDIT_SUBLIST +
+                ReddistEntry.COLUMN_SUBREDDIT+ "," + ReddistEntry.COLUMN_SUBLIST +
                 ") on conflict replace);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);

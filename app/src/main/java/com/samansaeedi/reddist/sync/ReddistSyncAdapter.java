@@ -67,6 +67,10 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                 context.getString(R.string.content_authority), bundle);
     }
 
+    public static void initializeSyncAdapter(Context context) {
+        getSyncAccount(context);
+    }
+
     public static Account getSyncAccount(Context context) {
         // Get an instance of the Android account manager
         AccountManager accountManager =
@@ -139,8 +143,9 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                 uriBuilder = uriBuilder.appendPath(sublistPreference + ".json")
                         .appendQueryParameter("limit", String.valueOf(numberOfItemsPreference));
             else
-                uriBuilder = uriBuilder.appendPath("r").appendPath(subredditPreference)
-                        .appendPath(sublistPreference)
+                uriBuilder = uriBuilder.appendPath("r")
+                        .appendPath(subredditPreference)
+                        .appendPath(sublistPreference + ".json")
                         .appendQueryParameter("limit", String.valueOf(numberOfItemsPreference));
             builtUri = uriBuilder.build();
 
@@ -164,7 +169,7 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                 return;
 
             returnedJsonStr = buffer.toString();
-
+            Log.i(LOG_TAG, returnedJsonStr);
         } catch (java.io.IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             return;
@@ -196,15 +201,23 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                 .getJSONArray("children");
         Vector<ContentValues> redditVector = new Vector<ContentValues>();
         long fetched = new Date().getTime();
-        for(int i = 0; i < redditArray.length(); i++){
-            ContentValues values = new ContentValues();
-            JSONObject data = redditArray.getJSONObject(i).getJSONObject("data");
-            for(Field f : ReddistEntry.class.getDeclaredFields()){
-                if(f.getName().startsWith("COLUMN_REDDIT"))
-                    values.put(f.getName(), data.getString(f.getName()));
+        try {
+            for (int i = 0; i < redditArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject data = redditArray.getJSONObject(i).getJSONObject("data");
+                for (Field f : ReddistEntry.class.getDeclaredFields()) {
+                    if (f.getName().startsWith("COLUMN_REDDIT"))
+                        values.put((String) f.get(null), data.getString((String) f.get(null)));
+                }
+                values.put(ReddistEntry.COLUMN_FETCHED, fetched);
+                values.put(ReddistEntry.COLUMN_SUBREDDIT, subreddit);
+                values.put(ReddistEntry.COLUMN_SUBLIST, sublist);
+                redditVector.add(values);
             }
-            values.put(ReddistEntry.COLUMN_FETCHED, fetched);
-            redditVector.add(values);
+        }
+        catch (IllegalAccessException e){
+            Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
         }
         ContentValues[] values = new ContentValues[redditVector.size()];
         redditVector.toArray(values);

@@ -23,8 +23,8 @@ public class ReddistContract {
 
         public static final String TABLE_NAME = "reddist";
         public static final String COLUMN_REDDIT_ID = "id";
-        public static final String COLUMN_REDDIT_SUBREDDIT = "subreddit";
-        public static final String COLUMN_REDDIT_SUBLIST = "sublist";
+        public static final String COLUMN_SUBREDDIT = "subreddit";
+        public static final String COLUMN_SUBLIST = "sublist";
         public static final String COLUMN_REDDIT_AUTHOR = "author";
         public static final String COLUMN_REDDIT_SCORE = "score";
         public static final String COLUMN_REDDIT_UPS = "ups";
@@ -43,6 +43,14 @@ public class ReddistContract {
         public static Uri buildReddistUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+        public static Uri buildReddistWithSublist(String sublist){
+            return CONTENT_URI.buildUpon().appendPath(sublist).build();
+        }
+        public static Uri buildReddistWithSubredditAndSublist(String subreddit, String sublist){
+            return CONTENT_URI.buildUpon().appendPath("r")
+                    .appendPath(subreddit).appendPath(sublist).build();
+        }
+
     }
 
 

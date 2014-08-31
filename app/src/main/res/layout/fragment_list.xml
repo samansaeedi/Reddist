@@ -2,8 +2,16 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list_fragment">
+    android:id="@+id/list_fragment"
+    tools:layout="@android:layout/list_content">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listview_reddist">
+
+    </ListView>
 
 </FrameLayout>

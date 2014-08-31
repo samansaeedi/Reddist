@@ -15,45 +15,51 @@ import com.samansaeedi.reddist.data.ReddistContract.ReddistEntry;
 public class ReddistProvider extends ContentProvider {
 
     private static final int REDDIST = 100;
-    private static final int REDDIST_WITH_SUBLIST = 101;
+    private static final int REDDIST_WITH_SUBREDDIT_AND_SUBLIST_AND_ID = 101;
     private static final int REDDIST_WITH_SUBREDDIT_AND_SUBLIST = 102;
-    private static final int REDDIST_WITH_SUBLIST_AND_ID = 103;
-    private static final int REDDIST_WITH_SUBREDDIT_AND_SUBLIST_AND_ID = 104;
-    private static final int REDDIST_WITH_FETCHDATE = 105;
+    private static final int REDDIST_WITH_FETCHDATE = 103;
+    private static final int REDDIST_WITH_SUBLIST_AND_ID = 104;
+    private static final int REDDIST_WITH_ID = 106;
+    private static final int REDDIST_WITH_SUBLIST = 105;
+
+
+
+
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher mch = new UriMatcher(UriMatcher.NO_MATCH);
-        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST, REDDIST);
-        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/d/#",
-                REDDIST_WITH_FETCHDATE);
-        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/*",
-                REDDIST_WITH_SUBLIST);
-        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/*/#",
-                REDDIST_WITH_SUBLIST_AND_ID);
-        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/r/*/*",
-                REDDIST_WITH_SUBREDDIT_AND_SUBLIST);
         mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/r/*/*/#",
                 REDDIST_WITH_SUBREDDIT_AND_SUBLIST_AND_ID);
+        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/r/*/*",
+                REDDIST_WITH_SUBREDDIT_AND_SUBLIST);
+        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/d/#",
+                REDDIST_WITH_FETCHDATE);
+        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/*/#",
+                REDDIST_WITH_SUBLIST_AND_ID);
+        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST + "/*",
+                REDDIST_WITH_SUBLIST);
+        mch.addURI(ReddistContract.CONTENT_AUTHORITY, ReddistContract.PATH_REDDIST, REDDIST);
         return mch;
     }
 
     public static final UriMatcher uriMatcher = buildUriMatcher();
 
     private static final String selectionSublist =
-            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = \'-\' and " +
-            ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ?";
+            ReddistEntry.COLUMN_SUBREDDIT + " = \'-\' and " +
+            ReddistEntry.COLUMN_SUBLIST + " = ? ";
     private static final String selectionSubredditAndSublist =
-            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = ? and " +
-            ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ?";
+            ReddistEntry.COLUMN_SUBREDDIT + " = ? and " +
+            ReddistEntry.COLUMN_SUBLIST + " = ? ";
     private static final String selectionSublistAndID =
-            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = \'-\' and " +
-                    ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ? and " +
-                    ReddistEntry.COLUMN_REDDIT_ID + " = ?";
+            ReddistEntry.COLUMN_SUBREDDIT + " = \'-\' and " +
+                    ReddistEntry.COLUMN_SUBLIST + " = ? and " +
+                    ReddistEntry.COLUMN_REDDIT_ID + " = ? ";
     private static final String selectionSubredditAndSublistAndID =
-            ReddistEntry.COLUMN_REDDIT_SUBREDDIT + " = ? and " +
-                    ReddistEntry.COLUMN_REDDIT_SUBLIST + " = ? and " +
-                    ReddistEntry.COLUMN_REDDIT_ID + " = ?";
-    private static final String selectionfetchDate = ReddistEntry.COLUMN_FETCHED + " <= ?";
+            ReddistEntry.COLUMN_SUBREDDIT + " = ? and " +
+                    ReddistEntry.COLUMN_SUBLIST + " = ? and " +
+                    ReddistEntry.COLUMN_REDDIT_ID + " = ? ";
+    private static final String selectionRedditWithID = ReddistEntry._ID + " = ? ";
+    private static final String selectionfetchDate = ReddistEntry.COLUMN_FETCHED + " <= ? ";
 
 
     private ReddistDbHelper dbHelper;
@@ -99,7 +105,7 @@ public class ReddistProvider extends ContentProvider {
                 cursor = dbHelper.getReadableDatabase().query(
                         ReddistContract.ReddistEntry.TABLE_NAME,
                         projection,
-                        selectionSublist,
+                        selection != null ? selection : selectionSublist,
                         selectionArgs,
                         null,
                         null,
