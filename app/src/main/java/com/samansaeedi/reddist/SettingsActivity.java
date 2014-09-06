@@ -26,6 +26,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         addPreferencesFromResource(R.xml.pref_general);
         bindPreferenceSummaryToValue(findPreference("subreddit"));
         bindPreferenceSummaryToValue(findPreference("sublist"));
+        bindPreferenceSummaryToValue(findPreference("numberOfItems"));
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {
@@ -35,10 +36,17 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
 
         // Trigger the listener immediately with the preference's
         // current value.
-        onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        if(preference.getKey().equals("numberOfItems")){
+            onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getInt(preference.getKey(), 15));
+        }else {
+            onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
         mBindingPreference = false;
     }
 
@@ -60,11 +68,13 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         }
 
         if ( !mBindingPreference ) {
-            if (preference.getKey().equals("subreddit") || preference.getKey().equals("sublist")) {
+            if (preference.getKey().equals("subreddit") || preference.getKey().equals("sublist")
+                    || preference.getKey().equals("numberOfItems")) {
 //                FetchWeatherTask weatherTask = new FetchWeatherTask(this);
 //                String location = value.toString();
 //                weatherTask.execute(location);
                 ReddistSyncAdapter.syncImmediately(this);
+                getContentResolver().notifyChange(ReddistContract.ReddistEntry.CONTENT_URI, null);
             } else {
                 // notify code that weather may be impacted
                 getContentResolver().notifyChange(ReddistContract.ReddistEntry.CONTENT_URI, null);

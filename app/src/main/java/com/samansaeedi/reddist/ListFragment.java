@@ -30,6 +30,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     private int mPosition;
     private String mSublist;
     private String mSubreddit;
+    private boolean zeroSyncAttempted = false;
 
     public static final int REDDIST_LOADER = 0;
 
@@ -38,7 +39,8 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
             ReddistEntry.COLUMN_REDDIT_TITLE,
             ReddistEntry.COLUMN_REDDIT_AUTHOR,
             ReddistEntry.COLUMN_REDDIT_NUM_COMMENTS,
-            ReddistEntry.COLUMN_REDDIT_SCORE
+            ReddistEntry.COLUMN_REDDIT_SCORE,
+            ReddistEntry.COLUMN_REDDIT_CREATED_UTC
     };
 
     public static final int COL_ID = 0;
@@ -46,6 +48,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     public static final int COL_REDDIT_AUTHOR = 2;
     public static final int COL_REDDIT_NUM_COMMENTS = 3;
     public static final int COL_REDDIT_SCORE = 4;
+    public static final int COL_REDDIT_CREATED_UTC = 5;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -68,8 +71,8 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onResume() {
         super.onResume();
         if (mSublist != null && mSubreddit != null &&
-                !mSublist.equals(Utility.getPreferredSublist(getActivity())) &&
-                !mSubreddit.equals(Utility.getPreferredSubreddit(getActivity()))) {
+                (!mSublist.equals(Utility.getPreferredSublist(getActivity())) ||
+                !mSubreddit.equals(Utility.getPreferredSubreddit(getActivity())))) {
             getLoaderManager().restartLoader(REDDIST_LOADER, null, this);
         }
     }
@@ -88,7 +91,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
                 cursor.moveToPosition(position);
                 //boolean isMetric = Utility.isMetric(getActivity());
                 mPosition = position;
-                ((Callback) getActivity()).onItemSelected(cursor.getLong(COL_ID));
+                ((Callback) getActivity()).onItemSelected(cursor.getLong(COL_ID), cursor.getPosition() + 1, true);
             }
         });
         return rootView;
@@ -96,44 +99,40 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader onCreateLoader(int i, Bundle bundle) {
-        String sortOrder = ReddistEntry.COLUMN_REDDIT_SCORE + " DESC";
         mSubreddit = Utility.getPreferredSubreddit(getActivity());
         mSublist = Utility.getPreferredSublist(getActivity());
-        Uri uri;
-        if(mSubreddit.equals("-")) {
-            uri = ReddistEntry.buildReddistWithSublist(mSublist);
-            return new CursorLoader(
-                    getActivity(),
-                    uri,
-                    LIST_COLUMNS,
-                    null,
-                    new String[] {mSublist},
-                    sortOrder
-            );
-        }
-        else
-        {
-            uri = ReddistEntry.buildReddistWithSubredditAndSublist(mSubreddit, mSublist);
-            return new CursorLoader(
-                    getActivity(),
-                    uri,
-                    LIST_COLUMNS,
-                    null,
-                    new String[] {mSubreddit, mSublist},
-                    sortOrder
-            );
-        }
+        String sortOrder;
+        if(mSublist.equalsIgnoreCase("new"))
+            sortOrder = ReddistEntry.COLUMN_REDDIT_CREATED_UTC + " DESC";
+        else sortOrder = ReddistEntry.COLUMN_REDDIT_SCORE + " DESC";
+        Log.i(LOG_TAG, "changed preferences to: " + mSubreddit + ", " + mSublist);
+        Uri uri = ReddistEntry.buildReddistWithSubredditAndSublist(mSubreddit, mSublist);
+        return new CursorLoader(
+                getActivity(),
+                uri,
+                LIST_COLUMNS,
+                null,
+                new String[] {mSubreddit, mSublist},
+                sortOrder
+        );
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 0) {
-            ReddistSyncAdapter.syncImmediately(getActivity());
-        }
+            if(!zeroSyncAttempted) {
+                ReddistSyncAdapter.syncImmediately(getActivity());
+                zeroSyncAttempted = true;
+            }
+        } else zeroSyncAttempted = false;
         adapter.swapCursor(data);
-        Log.i(LOG_TAG, "load finished");
-        if(mPosition != ListView.INVALID_POSITION)
-            listView.setSelection(mPosition);
+        Log.i(LOG_TAG, "load finished:" + mSubreddit + " " + mSublist);
+        if (mPosition != ListView.INVALID_POSITION && mPosition < data.getCount()) {
+            //listView.setSelection(mPosition);
+            listView.setItemChecked(mPosition, true);
+            data.moveToPosition(mPosition);
+            ((Callback) getActivity()).onItemSelected(data.getLong(COL_ID), data.getPosition() + 1, false);
+        }
     }
 
     @Override
@@ -142,7 +141,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public interface Callback {
-        public void onItemSelected(long id);
+        public void onItemSelected(long id, int position, boolean clicked);
     }
 
     @Override

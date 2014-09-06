@@ -3,6 +3,7 @@ package com.samansaeedi.reddist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 /**
@@ -14,16 +15,30 @@ public class DetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
         if (savedInstanceState == null) {
             Bundle b = new Bundle();
             b.putLong("id", getIntent().getLongExtra("id", 0));
             b.putBoolean("twoPane", false);
+            String sublistPreference = Utility.getPreferredSublist(this);
+            String subredditPreference = Utility.getPreferredSubreddit(this);
+            String title;
+            if(!subredditPreference.equals("-"))
+                title = subredditPreference + " | " + sublistPreference +
+                        " #" + getIntent().getIntExtra("position", 1);
+            else title = sublistPreference + " #" + getIntent().getIntExtra("position", 1);
+            getActionBar().setTitle(title);
             DetailFragment f = new DetailFragment();
             f.setArguments(b);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.reddist_detail_container, f)
                     .commit();
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_activity, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -44,6 +45,14 @@ public class ReddistAdapter extends CursorAdapter {
         viewHolder.title.setText(cursor.getString(ListFragment.COL_REDDIT_TITLE));
         viewHolder.author.setText(cursor.getString(ListFragment.COL_REDDIT_AUTHOR));
         viewHolder.score.setText(cursor.getString(ListFragment.COL_REDDIT_SCORE));
+        int position = cursor.getPosition();
+        cursor.moveToFirst();
+        int high = cursor.getInt(ListFragment.COL_REDDIT_SCORE);
+        cursor.moveToPosition(position);
+        int value = cursor.getInt(ListFragment.COL_REDDIT_SCORE);
+        viewHolder.score.setTextColor(Utility.getColorFromRange(value, high));
+        viewHolder.order.setText(String.valueOf(cursor.getPosition() + 1));
+        viewHolder.date.setText(Utility.getFormattedDate(cursor.getLong(ListFragment.COL_REDDIT_CREATED_UTC)));
         Log.i(LOG_TAG, "binded view");
     }
 
@@ -52,12 +61,18 @@ public class ReddistAdapter extends CursorAdapter {
         public final TextView title;
         public final TextView author;
         public final TextView score;
+        public final LinearLayout listItem;
+        public final TextView date;
+        public final TextView order;
 
         public ViewHolder(View view){
+            listItem = (LinearLayout) view.findViewById(R.id.list_item);
             numComments = (TextView) view.findViewById(R.id.list_item_numcomments);
             title = (TextView) view.findViewById(R.id.list_item_title);
             author = (TextView) view.findViewById(R.id.list_item_author);
             score = (TextView) view.findViewById(R.id.list_item_score);
+            date = (TextView) view.findViewById(R.id.list_item_date);
+            order = (TextView) view.findViewById(R.id.list_item_order);
         }
     }
 }

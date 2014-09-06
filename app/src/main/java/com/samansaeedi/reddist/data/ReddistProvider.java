@@ -237,6 +237,7 @@ public class ReddistProvider extends ContentProvider {
         int mch = uriMatcher.match(uri);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         switch (mch){
+            case REDDIST_WITH_SUBREDDIT_AND_SUBLIST:
             case REDDIST:
             {
                 db.beginTransaction();

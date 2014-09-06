@@ -48,10 +48,10 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public final String LOG_TAG = ReddistSyncAdapter.class.getSimpleName();
 
-    public static final int SYNC_INTERVAL = 60 * 180;
+    public static final int SYNC_INTERVAL = 7 * 60 * 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
-    private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
-    private static final int WEATHER_NOTIFICATION_ID = 3004;
+    private static final long NOTIFICATION_INTERVAL_MS = 6 * 60 * 60 * 1000;
+    private static final int REDDIST_NOTIFICATION_ID = 38734828;
 
 
 
@@ -126,6 +126,7 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        Log.i(LOG_TAG, "onPerformSync");
         String sublistPreference = Utility.getPreferredSublist(getContext());
         String subredditPreference = Utility.getPreferredSubreddit(getContext());
         Integer numberOfItemsPreference = Utility.getPreferredNumberOfListItems(getContext());
@@ -196,7 +197,8 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public void getReddistDataFromJson(String redditJsonString, String sublist, String subreddit,
-                                       int numberOfItems) throws JSONException{
+                                       int numberOfItems) throws JSONException {
+        Log.i(LOG_TAG, "getReddistFromJson");
         JSONArray redditArray = new JSONObject(redditJsonString).getJSONObject("data")
                 .getJSONArray("children");
         Vector<ContentValues> redditVector = new Vector<ContentValues>();
@@ -221,28 +223,33 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         ContentValues[] values = new ContentValues[redditVector.size()];
         redditVector.toArray(values);
-        getContext().getContentResolver().bulkInsert(ReddistEntry.CONTENT_URI, values);
+        getContext().getContentResolver().delete(ReddistEntry.CONTENT_URI, null, null);
+        getContext().getContentResolver().bulkInsert(
+                ReddistEntry.buildReddistWithSubredditAndSublist(subreddit, sublist), values);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
-        getContext().getContentResolver().delete(ReddistEntry.CONTENT_URI,
-                ReddistEntry.COLUMN_FETCHED + " <= ?",
-                new String[] {String.valueOf(cal.getTimeInMillis())});
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if(prefs.getBoolean("notifications", true))
+//        getContext().getContentResolver().delete(ReddistEntry.CONTENT_URI,
+//                ReddistEntry.COLUMN_FETCHED + " <= ?",
+//                new String[] {String.valueOf(cal.getTimeInMillis())});
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        Log.i(LOG_TAG, "notifications: " + String.valueOf(prefs.getBoolean("notifications", false)));
+        if(prefs.getBoolean("notifications", false))
             notifyUser(subreddit);
     }
-
     private void notifyUser(String subreddit){
+        Log.i(LOG_TAG, "notifyUser");
         Context context = getContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String lastNotificationKey = context.getString(R.string.pref_last_notification);
         long lastSync = prefs.getLong(lastNotificationKey, 0);
 
-        if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
+        if (System.currentTimeMillis() - lastSync >= NOTIFICATION_INTERVAL_MS) {
             String title = context.getString(R.string.app_name);
-            String contentText = String.format("New Content Available for Subreddit %s",
-                    subreddit);
+            String contentText;
+            if(!subreddit.isEmpty() && !subreddit.equals("-"))
+                contentText = String.format("New content available for the %s subreddit",
+                        subreddit);
+            else contentText = "New content available";
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(getContext())
                             .setContentTitle(title)
@@ -264,18 +271,15 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
             mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setSmallIcon(R.drawable.ic_launcher);
             NotificationManager mNotificationManager =
                     (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             // mId allows you to update the notification later on.
-            mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
-
-
-
+            mNotificationManager.notify(REDDIST_NOTIFICATION_ID, mBuilder.build());
             //refreshing last sync
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong(lastNotificationKey, System.currentTimeMillis());
             editor.commit();
-
         }
     }
 }

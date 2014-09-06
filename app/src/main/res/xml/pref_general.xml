@@ -2,20 +2,24 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:title="Subreddit"
+        android:title="@string/pref_subreddit_title"
         android:key="subreddit"
         android:defaultValue="-"
         android:inputType="text"
         android:singleLine="true" />
     <ListPreference
-        android:title="Sublist"
+        android:title="@string/pref_sublist_title"
         android:key="sublist"
         android:defaultValue="hot"
         android:entries="@array/sublist_keys"
         android:entryValues="@array/sublist_values" />
+    <CheckBoxPreference
+        android:title="@string/pref_notifications_title"
+        android:key="notifications"
+        android:defaultValue="true"
+        />
     <com.samansaeedi.reddist.NumberPickerPreference
         android:title="@string/list_number_title"
         android:key="numberOfItems"
         android:defaultValue="15" />
-
 </PreferenceScreen>

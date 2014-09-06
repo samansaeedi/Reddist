@@ -19,7 +19,9 @@ public class NumberPickerPreference extends DialogPreference {
 
     public NumberPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setDialogLayoutResource(R.layout.number_pref);
     }
+
 
     @Override
     protected void onBindDialogView(View view) {
@@ -51,6 +53,8 @@ public class NumberPickerPreference extends DialogPreference {
         }
         else this.initialValue = (Integer)defaultValue;
     }
+
+
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {

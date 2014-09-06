@@ -2,6 +2,8 @@ package com.samansaeedi.reddist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +43,6 @@ public class MainActivity extends ActionBarActivity implements ListFragment.Call
             twoPane = false;
         }
         ReddistSyncAdapter.initializeSyncAdapter(this);
-        ReddistSyncAdapter.syncImmediately(this);
     }
 
     @Override
@@ -60,21 +61,50 @@ public class MainActivity extends ActionBarActivity implements ListFragment.Call
     }
 
     @Override
-    public void onItemSelected(long id) {
-        if(twoPane){
-            DetailFragment f = new DetailFragment();
-            Bundle b = new Bundle();
-            b.putLong("id", id);
-            b.putBoolean("twoPane", twoPane);
-            f.setArguments(b);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.reddist_detail_container, f)
-                    .commit();
+    public void onItemSelected(long id, int position, boolean clicked) {
+        if(clicked) {
+            if (twoPane) {
+                DetailFragment f = new DetailFragment();
+                Bundle b = new Bundle();
+                b.putLong("id", id);
+                b.putBoolean("twoPane", twoPane);
+                f.setArguments(b);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.reddist_detail_container, f)
+                        .commit();
+            } else {
+                Intent detailsIntent = new Intent(this, DetailActivity.class)
+                        .putExtra("id", id).putExtra("position", position);
+                startActivity(detailsIntent);
+            }
         }
         else {
-            Intent detailsIntent = new Intent(this, DetailActivity.class)
-                    .putExtra("id", id);
-            startActivity(detailsIntent);
+            Message m = new Message();
+            Bundle b = new Bundle();
+            b.putLong("id", id);
+            m.setData(b);
+            m.what = 1;
+            handler.sendMessage(m);
         }
     }
+    // code from http://stackoverflow.com/questions/12276243/commit-fragment-from-onloadfinished-within-activity
+    private Handler handler = new Handler()  // handler for commiting fragment after data is loaded
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if(msg.what == 1){
+                if (twoPane) {
+                    DetailFragment f = new DetailFragment();
+                    Bundle b = new Bundle();
+                    b.putLong("id", msg.getData().getLong("id"));
+                    b.putBoolean("twoPane", twoPane);
+                    f.setArguments(b);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.reddist_detail_container, f)
+                            .commit();
+                }
+            }
+        }
+    };
 }
