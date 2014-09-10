@@ -1,88 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/touch_selector">
+    android:background="@drawable/touch_selector"
+    android:orientation="horizontal"
+    android:paddingRight="10dp"
+    android:paddingLeft="0dp">
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
+
         <com.samansaeedi.reddist.VerticalTextView
+            android:id="@+id/list_item_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="bottom"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="24sp"
-            android:id="@+id/list_item_score"/>
+            android:gravity="bottom"
+            android:textSize="24sp" />
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_weight="6"
+        android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="0dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/list_item_title"
+                android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="10"
-                android:minHeight="50dp"
-                android:gravity="center_vertical"
-                android:id="@+id/list_item_title"
                 android:fontFamily="roboto-regular"
-                android:textSize="16sp"
-                android:padding="10dp"/>
+                android:gravity="center_vertical"
+                android:minHeight="50dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/ui_text"
+                android:textSize="18sp" />
+
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:orientation="vertical">
+
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:textSize="20sp"
                     android:id="@+id/list_item_order"
-                    android:gravity="center"/>
-                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/light_grey"
-                    android:id="@+id/list_item_numcomments"/>
+                    android:layout_height="wrap_content"
+                    android:gravity="top|right"
+                    android:textColor="@color/neutral"
+                    android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="bottom">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|bottom"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/ic_comment" />
+                        <TextView
+                            android:id="@+id/list_item_numcomments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textColor="@color/neutral" />
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:orientation="horizontal">
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="20dp"
-                android:id="@+id/list_item_author"
                 android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical|left"
-                android:textColor="@color/light_grey"
-                android:paddingRight="10dp"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:id="@+id/list_item_date"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical|right"
-                android:textColor="@color/light_grey"
-                android:paddingRight="10dp"/>
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_author"/>
+                <TextView
+                    android:id="@+id/list_item_author"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:textColor="@color/neutral" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="right">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_time"/>
+                <TextView
+                    android:id="@+id/list_item_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:layout_gravity="right|center_vertical"
+                    android:textColor="@color/neutral" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

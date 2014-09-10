@@ -1,10 +1,16 @@
 package com.samansaeedi.reddist;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.samansaeedi.reddist.data.ReddistContract;
+import com.samansaeedi.reddist.data.ReddistDbHelper;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -85,5 +91,24 @@ public class Utility {
 
         return formattedDate;
 
+    }
+
+    public static int getHighestScore(Context context){
+        ReddistDbHelper dbHelper = new ReddistDbHelper(context);
+        String sql = "SELECT Max(" + ReddistContract.ReddistEntry.COLUMN_REDDIT_SCORE +
+                ") FROM " + ReddistContract.ReddistEntry.TABLE_NAME;
+        SQLiteDatabase db = null;
+        try {
+            db = dbHelper.getReadableDatabase();
+            Cursor cursor = db.rawQuery(sql, null);
+            if(cursor.moveToFirst())
+                return cursor.getInt(0);
+        } catch (SQLiteException e){
+
+        } finally {
+            if(db != null && db.isOpen())
+                db.close();
+        }
+        return Integer.MAX_VALUE;
     }
 }

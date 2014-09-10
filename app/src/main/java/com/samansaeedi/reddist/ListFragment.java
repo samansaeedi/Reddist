@@ -1,5 +1,7 @@
 package com.samansaeedi.reddist;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.samansaeedi.reddist.data.ReddistContract.ReddistEntry;
 import com.samansaeedi.reddist.sync.ReddistSyncAdapter;
 
@@ -25,12 +29,14 @@ import com.samansaeedi.reddist.sync.ReddistSyncAdapter;
 public class ListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = ListFragment.class.getSimpleName();
 
-    private CursorAdapter adapter;
+    private ReddistAdapter adapter;
     private ListView listView;
     private int mPosition;
     private String mSublist;
     private String mSubreddit;
     private boolean zeroSyncAttempted = false;
+    private boolean twoPane = false;
+    private int highestScore;
 
     public static final int REDDIST_LOADER = 0;
 
@@ -64,6 +70,8 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
             mSubreddit = savedInstanceState.getString("subreddit");
             mSublist = savedInstanceState.getString("sublist");
         }
+        Bundle b = getArguments();
+        twoPane = b.getBoolean("twoPane");
         super.onCreate(savedInstanceState);
     }
 
@@ -80,8 +88,22 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        //String deviceId = ((TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+        AdView adView = (AdView) rootView.findViewById(R.id.adView);
+        Bundle adBundle = new Bundle();
+        adBundle.putString("color_bg", String.valueOf(getResources().getColor(R.color.orangered)));
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("014038006382687")
+                .build();
+        adView.loadAd(adRequest);
         if(adapter == null)
             adapter = new ReddistAdapter(getActivity(), null, 0);
+
+        if(twoPane)
+            adapter.setViewId(R.layout.list_item_reddist_wide);
+        else adapter.setViewId(R.layout.list_item_reddist);
+
         listView = (ListView) rootView.findViewById(R.id.listview_reddist);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,7 +113,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
                 cursor.moveToPosition(position);
                 //boolean isMetric = Utility.isMetric(getActivity());
                 mPosition = position;
-                ((Callback) getActivity()).onItemSelected(cursor.getLong(COL_ID), cursor.getPosition() + 1, true);
+                ((Callback) getActivity()).onItemSelected(cursor.getLong(COL_ID), cursor.getPosition() + 1, true, highestScore);
             }
         });
         return rootView;
@@ -125,13 +147,17 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
                 zeroSyncAttempted = true;
             }
         } else zeroSyncAttempted = false;
+        NotificationManager mNotificationManager =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(ReddistSyncAdapter.REDDIST_NOTIFICATION_ID);
         adapter.swapCursor(data);
         Log.i(LOG_TAG, "load finished:" + mSubreddit + " " + mSublist);
         if (mPosition != ListView.INVALID_POSITION && mPosition < data.getCount()) {
             //listView.setSelection(mPosition);
+            highestScore = Utility.getHighestScore(getActivity());
             listView.setItemChecked(mPosition, true);
             data.moveToPosition(mPosition);
-            ((Callback) getActivity()).onItemSelected(data.getLong(COL_ID), data.getPosition() + 1, false);
+            ((Callback) getActivity()).onItemSelected(data.getLong(COL_ID), data.getPosition() + 1, false, highestScore);
         }
     }
 
@@ -141,7 +167,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     public interface Callback {
-        public void onItemSelected(long id, int position, boolean clicked);
+        public void onItemSelected(long id, int position, boolean clicked, int highestScore);
     }
 
     @Override

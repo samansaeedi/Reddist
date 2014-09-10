@@ -15,9 +15,11 @@ import android.widget.TextView;
  */
 public class ReddistAdapter extends CursorAdapter {
     private static final String LOG_TAG = ReddistAdapter.class.getSimpleName();
+    private int viewId;
 
     public ReddistAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+        viewId = R.layout.list_item_reddist;
     }
 
     @Override
@@ -30,9 +32,17 @@ public class ReddistAdapter extends CursorAdapter {
         return 1;
     }
 
+    public void setViewId(int id){
+        viewId = id;
+    }
+    public int getViewId(){
+        return viewId;
+    }
+
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_item_reddist, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(viewId, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;
@@ -41,18 +51,20 @@ public class ReddistAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.numComments.setText(cursor.getString(ListFragment.COL_REDDIT_NUM_COMMENTS));
-        viewHolder.title.setText(cursor.getString(ListFragment.COL_REDDIT_TITLE));
-        viewHolder.author.setText(cursor.getString(ListFragment.COL_REDDIT_AUTHOR));
-        viewHolder.score.setText(cursor.getString(ListFragment.COL_REDDIT_SCORE));
-        int position = cursor.getPosition();
-        cursor.moveToFirst();
-        int high = cursor.getInt(ListFragment.COL_REDDIT_SCORE);
-        cursor.moveToPosition(position);
-        int value = cursor.getInt(ListFragment.COL_REDDIT_SCORE);
-        viewHolder.score.setTextColor(Utility.getColorFromRange(value, high));
         viewHolder.order.setText(String.valueOf(cursor.getPosition() + 1));
-        viewHolder.date.setText(Utility.getFormattedDate(cursor.getLong(ListFragment.COL_REDDIT_CREATED_UTC)));
+        viewHolder.title.setText(cursor.getString(ListFragment.COL_REDDIT_TITLE));
+        int high = Utility.getHighestScore(context);
+        int value = cursor.getInt(ListFragment.COL_REDDIT_SCORE);
+        if(viewId == R.layout.list_item_reddist) {
+            viewHolder.numComments.setText(cursor.getString(ListFragment.COL_REDDIT_NUM_COMMENTS));
+            viewHolder.author.setText(cursor.getString(ListFragment.COL_REDDIT_AUTHOR));
+            viewHolder.score.setText(cursor.getString(ListFragment.COL_REDDIT_SCORE));
+            viewHolder.score.setTextColor(Utility.getColorFromRange(value, high));
+            viewHolder.date.setText(Utility.getFormattedDate(cursor.getLong(ListFragment.COL_REDDIT_CREATED_UTC)));
+        }
+        else {
+            viewHolder.order.setTextColor(Utility.getColorFromRange(value, high));
+        }
         Log.i(LOG_TAG, "binded view");
     }
 

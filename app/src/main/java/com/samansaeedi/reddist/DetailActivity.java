@@ -6,15 +6,37 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 /**
  * Created by captain on 8/30/14.
  */
 public class DetailActivity extends ActionBarActivity {
+    private InterstitialAd interstitial;
+
+    public void displayInterstitial() {
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId("ca-app-pub-3551699255306011/6284426089");
+
+        // Create ad request.
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("014038006382687")
+                .build();
+
+        // Begin loading your interstitial.
+        interstitial.loadAd(adRequest);
 
         if (savedInstanceState == null) {
             Bundle b = new Bundle();
@@ -27,7 +49,7 @@ public class DetailActivity extends ActionBarActivity {
                 title = subredditPreference + " | " + sublistPreference +
                         " #" + getIntent().getIntExtra("position", 1);
             else title = sublistPreference + " #" + getIntent().getIntExtra("position", 1);
-            getActionBar().setTitle(title);
+            getSupportActionBar().setTitle(title);
             DetailFragment f = new DetailFragment();
             f.setArguments(b);
             getSupportFragmentManager().beginTransaction()

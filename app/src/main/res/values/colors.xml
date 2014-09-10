@@ -4,13 +4,14 @@
     <color name="reddist_light_blue">#DCDBFF</color>
     <color name="grey">#cccccc</color>
     <color name="light_grey">#C9C9C9</color>
+    <color name="white">#ffffff</color>
 
     <color name="reddit_orange">#ff5700</color>
     <color name="orangered">#ff4500</color>
     <color name="upvote">#ff8b60</color>
     <color name="neutral">#c6c6c6</color>
     <color name="downvote">#9494ff</color>
-    <color name="light_bg">#eff7ff</color>
+    <color name="light_bg">#ffefffec</color>
     <color name="header">#cee3f8</color>
     <color name="ui_text">#336699</color>
 </resources>

@@ -51,7 +51,7 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 7 * 60 * 60;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     private static final long NOTIFICATION_INTERVAL_MS = 6 * 60 * 60 * 1000;
-    private static final int REDDIST_NOTIFICATION_ID = 38734828;
+    public static final int REDDIST_NOTIFICATION_ID = 38734828;
 
 
 
@@ -272,6 +272,7 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
                     );
             mBuilder.setContentIntent(resultPendingIntent);
             mBuilder.setSmallIcon(R.drawable.ic_launcher);
+            mBuilder.setAutoCancel(true);
             NotificationManager mNotificationManager =
                     (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             // mId allows you to update the notification later on.
