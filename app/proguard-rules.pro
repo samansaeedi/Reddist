@@ -11,10 +11,11 @@
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+#class:
+
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+   public *;
+}
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
 }
@@ -37,3 +38,9 @@
     public static *** v(...);
     public static *** i(...);
 }
+
+-keep class java.** { *; }
+-keep class com.samansaeedi.** { *; }
+-keep class javax.** { *; }
+-keep class org.** { *; }
+-keep class android.** { *; }

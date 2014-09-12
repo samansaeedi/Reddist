@@ -198,7 +198,7 @@ public class ReddistSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void getReddistDataFromJson(String redditJsonString, String sublist, String subreddit,
                                        int numberOfItems) throws JSONException {
-        Log.i(LOG_TAG, "getReddistFromJson");
+        Log.i(LOG_TAG, "getReddistFromJson: " + redditJsonString);
         JSONArray redditArray = new JSONObject(redditJsonString).getJSONObject("data")
                 .getJSONArray("children");
         Vector<ContentValues> redditVector = new Vector<ContentValues>();

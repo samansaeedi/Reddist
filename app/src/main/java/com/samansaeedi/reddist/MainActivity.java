@@ -41,6 +41,17 @@ public class MainActivity extends ActionBarActivity implements ListFragment.Call
 //    }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String sublistPreference = Utility.getPreferredSublist(this);
+        String subredditPreference = Utility.getPreferredSubreddit(this);
+        String title;
+        if(!subredditPreference.equals("-"))
+            title = "Reddist|" + subredditPreference + "|" + sublistPreference;
+        else title = "Reddist|" + sublistPreference;
+        getSupportActionBar().setTitle(title);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +75,6 @@ public class MainActivity extends ActionBarActivity implements ListFragment.Call
             // Begin loading your interstitial.
             interstitial.loadAd(adRequest);
 
-            String sublistPreference = Utility.getPreferredSublist(this);
-            String subredditPreference = Utility.getPreferredSubreddit(this);
-            String title;
-            if(!subredditPreference.equals("-"))
-                title = "Reddist|" + subredditPreference + "|" + sublistPreference;
-            else title = "Reddist|" + sublistPreference;
-            getSupportActionBar().setTitle(title);
 
 
             b.putBoolean("twoPane", twoPane);
