@@ -68,6 +68,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private int highestScore;
     private InterstitialAd interstitial;
     private Activity activity;
+    private CountDownTimer timer = null;
     
     public static String[] REDDIST_COLUMNS = {
             ReddistEntry.TABLE_NAME + "." + ReddistEntry._ID,
@@ -144,6 +145,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     }
                 }, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        if(timer != null)
+            timer.cancel();
     }
 
 
@@ -159,7 +162,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         else
             rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         if(new Random(System.currentTimeMillis()).nextInt(100) < 35 ) {
-            new CountDownTimer(10000, 10000) {
+            timer = new CountDownTimer(10000, 10000) {
                 @Override
                 public void onFinish() {
                     if(activity != null) {
@@ -172,7 +175,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 public void onTick(long millisUntilFinished) {
 
                 }
-            }.start();
+            };
+            timer.start();
         }
         viewHolder = new ViewHolder(rootView, twoPane);
         WebSettings settings = viewHolder.webView.getSettings();

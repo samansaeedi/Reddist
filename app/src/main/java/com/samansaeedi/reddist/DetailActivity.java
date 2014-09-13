@@ -26,6 +26,8 @@ public class DetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         interstitial = new InterstitialAd(this);
         interstitial.setAdUnitId("ca-app-pub-3551699255306011/6284426089");
 
